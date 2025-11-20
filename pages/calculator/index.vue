@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { definePageMeta } from '#app'
+import CalculatorTool from './tool.vue'
+
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 const isAdminLoggedIn = useState('isAdminLoggedIn')
@@ -27,10 +30,7 @@ watch(isAdminLoggedIn, (newVal) => {
         <p>Modify room sizes and create your space layout</p>
       </div>
       <div class="calculator-content">
-        <!-- Calculator tool will be embedded here -->
-        <div class="placeholder">
-          <p>Calculator tool loading...</p>
-        </div>
+        <CalculatorTool />
       </div>
     </div>
     <div v-else class="not-authorized">
@@ -41,7 +41,9 @@ watch(isAdminLoggedIn, (newVal) => {
 
 <style scoped>
 .calculator-page {
+  min-height: 100vh;
   padding: 2rem;
+  background: #f9fafb;
 }
 
 .calculator-wrapper {
@@ -54,37 +56,27 @@ watch(isAdminLoggedIn, (newVal) => {
 }
 
 .calculator-header h1 {
-  font-size: 1.875rem;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  margin: 0 0 0.5rem 0;
-  color: #000;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
 }
 
 .calculator-header p {
   font-size: 1rem;
-  font-weight: 400;
-  letter-spacing: -0.016em;
-  color: #666;
-  margin: 0;
+  color: #6b7280;
 }
 
 .calculator-content {
   background: white;
   border-radius: 0.5rem;
-  border: 1px solid #f0f0f0;
   padding: 2rem;
-}
-
-.placeholder {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: #999;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .not-authorized {
   text-align: center;
-  padding: 2rem;
-  color: #d32f2f;
+  padding: 4rem 2rem;
+  color: #6b7280;
 }
 </style>
