@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Space Calculator | Inspire Analysis</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #f9fafb; color: #1f2937; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .calculator { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        h1 { font-size: 32px; margin-bottom: 10px; color: #2563eb; }
+        .section { margin-bottom: 30px; }
+        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; background: #1f2937; color: white; padding: 12px; border-radius: 6px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+        button { background: #2563eb; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 10px; }
+        button:hover { background: #1d4ed8; }
+        .checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .checkbox-item { display: flex; gap: 10px; align-items: center; }
+        .checkbox-item input { width: 20px; height: 20px; }
+        .results { background: #f3f4f6; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+        .result-row:last-child { border-bottom: none; }
+        .result-value { font-weight: 600; color: #2563eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calculator">
+            <h1>Office Space Calculator</h1>
+            <p>Calculate office space requirements for your facility</p>
+            
+            <div class="section">
+                <div class="section-title">Location Settings</div>
+                <div class="form-group">
+                    <label>Scenario Type</label>
+                    <select id="scenario" onchange="calculateSpace()">
+                        <option value="high-density">High-Density Call Center</option>
+                        <option value="standard">Standard Office</option>
+                        <option value="flexible">Flexible Workspace</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Configuration</div>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked onchange="calculateSpace()"> Reception
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked onchange="calculateSpace()"> Waiting Area
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked onchange="calculateSpace()"> Hallway/Corridor (15% auto)
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" onchange="calculateSpace()"> Manager Office
+                    </label>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Headcount Forecast</div>
+                <div class="form-group">
+                    <label>Number of Employees</label>
+                    <input type="number" id="headcount" value="50" min="1" onchange="calculateSpace()">
+                </div>
+            </div>
+            
+            <button onclick="calculateSpace()">Calculate Space</button>
+            <button onclick="saveState()">Save</button>
+            <button onclick="loadState()">Load</button>
+            
+            <div class="results">
+                <div class="result-row">
+                    <span>Base Space Required (sqm)</span>
+                    <span class="result-value" id="baseSpace">-</span>
+                </div>
+                <div class="result-row">
+                    <span>With Circulation (25%)</span>
+                    <span class="result-value" id="withCirculation">-</span>
+                </div>
+                <div class="result-row">
+                    <span>Contingency (10%)</span>
+                    <span class="result-value" id="contingency">-</span>
+                </div>
+                <div class="result-row">
+                    <span style="font-weight: 600; font-size: 16px;">TOTAL REQUIRED (sqm)</span>
+                    <span class="result-value" style="font-size: 18px;" id="totalSpace">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function calculateSpace() {
+            const headcount = parseInt(document.getElementById('headcount').value) || 50;
+            const baseSpace = headcount * 15; // 15 sqm per person standard
+            const withCirculation = baseSpace * 1.25;
+            const contingency = withCirculation * 0.10;
+            const total = withCirculation + contingency;
+            
+            document.getElementById('baseSpace').textContent = baseSpace.toFixed(1);
+            document.getElementById('withCirculation').textContent = withCirculation.toFixed(1);
+            document.getElementById('contingency').textContent = contingency.toFixed(1);
+            document.getElementById('totalSpace').textContent = total.toFixed(1);
+        }
+        
+        function saveState() {
+            const state = {
+                headcount: document.getElementById('headcount').value,
+                scenario: document.getElementById('scenario').value,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('calculatorState', JSON.stringify(state));
+            alert('State saved successfully!');
+        }
+        
+        function loadState() {
+            const saved = localStorage.getItem('calculatorState');
+            if (saved) {
+                const state = JSON.parse(saved);
+                document.getElementById('headcount').value = state.headcount;
+                document.getElementById('scenario').value = state.scenario;
+                calculateSpace();
+                alert('State loaded successfully!');
+            } else {
+                alert('No saved state found!');
+            }
+        }
+        
+        // Calculate on page load
+        window.addEventListener('load', calculateSpace);
+    </script>
+</body>
+</html>
